@@ -10,7 +10,8 @@ module.exports = {
   watch: true,
   // entry: './src/app.js',
   entry: {
-    app: './src/app.js',
+    index: './src/index.js',
+    hello: './src/hello.js',
   },
   plugins: [
     new ESLintPlugin(),

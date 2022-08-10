@@ -1,5 +1,4 @@
 import { getMedia, getRamdonNumber } from 'belugs';
-import './scss/style.scss';
 
 let students = null;
 
@@ -30,48 +29,44 @@ const showsTheWinner = (luckyStudent) => {
   document.querySelector(`#student-${luckyStudent.i}`).style.backgroundColor = 'green';
 };
 
-const addListenerToButton = () => {
-  const $btn = document.querySelector('#btn-init');
-  $btn.removeAttribute('disabled');
-  $btn.addEventListener('click', () => {
-    const studentsArr = Array.from(students);
-    const luckyStudents = [];
+function studentRandomizer() {
+  const studentsArr = Array.from(students);
+  const luckyStudents = [];
 
-    while (luckyStudents.length < 5) {
-      const nRandon = getRamdonNumber(0, studentsArr.length - 1);
+  while (luckyStudents.length < 5) {
+    const nRandon = getRamdonNumber(0, studentsArr.length - 1);
 
-      const student = studentsArr.splice(nRandon, 1);
-      luckyStudents.push(student[0]);
-    }
+    const student = studentsArr.splice(nRandon, 1);
+    luckyStudents.push(student[0]);
+  }
 
-    const medias = [];
+  const medias = [];
 
-    luckyStudents.map((ls, i) => {
-      const lsReference = ls;
-      medias[i] = ls.media;
-      lsReference.i = i;
-      return ls;
-    });
-
-    createDomIntoList(luckyStudents);
-
-    const maxValue = Math.max(...medias);
-
-    const studentsWinner = luckyStudents.filter((student) => student.media === maxValue);
-
-    if (studentsWinner.length === 1) {
-      showsTheWinner(studentsWinner[0]);
-    } else {
-      const nLucky = getRamdonNumber(0, studentsWinner.length - 1);
-      showsTheWinner(studentsWinner[nLucky]);
-    }
+  luckyStudents.map((ls, i) => {
+    const lsReference = ls;
+    medias[i] = ls.media;
+    lsReference.i = i;
+    return ls;
   });
-};
+
+  createDomIntoList(luckyStudents);
+
+  const maxValue = Math.max(...medias);
+
+  const studentsWinner = luckyStudents.filter((student) => student.media === maxValue);
+
+  if (studentsWinner.length === 1) {
+    showsTheWinner(studentsWinner[0]);
+  } else {
+    const nLucky = getRamdonNumber(0, studentsWinner.length - 1);
+    showsTheWinner(studentsWinner[nLucky]);
+  }
+}
 
 const init = (studentsArr) => {
   students = studentsArr;
   createDomIntoTable(studentsArr);
-  addListenerToButton();
+  studentRandomizer();
 };
 
 const getStudents = async () => {
@@ -90,6 +85,14 @@ const getStudents = async () => {
   }
   return data;
 };
-getStudents()
-  .then((s) => init(s))
-  .catch((err) => console.error(err));
+
+const initPage = async () => {
+  try {
+    const s = await getStudents();
+    init(s);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export default initPage;
