@@ -1,1 +1,1 @@
-console.log('hello world!');
+// import { getRamdonNumber } from 'belugs';
